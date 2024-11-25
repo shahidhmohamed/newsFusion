@@ -78,10 +78,13 @@ class _CategoryArticleState extends State<CategoryArticle> {
                       children: [
                         // First dropdown: Filter by Source
                         DropdownButton<String>(
+                          isExpanded: true,
                           value: _selectedSource,
-                          hint: const Text(
-                            "Filter by Source",
-                            style: TextStyle(color: Colors.white),
+                          hint: const Center( // Center requires a child
+                            child: Text(
+                              "Filter by Source",
+                              style: TextStyle(color: Colors.white),
+                            ),
                           ),
                           dropdownColor: Colors.grey[800],
                           items: articles
