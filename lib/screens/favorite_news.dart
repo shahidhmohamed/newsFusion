@@ -1,29 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mark1/models/news_article.dart';
-import 'package:mark1/services/news_api_service.dart';
+import '../models/global_fav.dart';
 
-class SourceArticlesPage extends StatefulWidget {
-  final String sourceId;
-  final String sourceName;
-
-  const SourceArticlesPage(
-      {required this.sourceId, required this.sourceName, Key? key})
-      : super(key: key);
-
-  @override
-  _SourceArticlesPageState createState() => _SourceArticlesPageState();
-}
-
-class _SourceArticlesPageState extends State<SourceArticlesPage> {
-  late Future<List<NewsArticle>> _articlesFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    _articlesFuture =
-        NewsApiService().fetchTopHeadlines(country: widget.sourceId);
-  }
-
+class FavoritesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,9 +27,9 @@ class _SourceArticlesPageState extends State<SourceArticlesPage> {
                     },
                   ),
                   const SizedBox(width: 10),
-                  Text(
-                    widget.sourceName,
-                    style: const TextStyle(
+                  const Text(
+                    'FAVORITES',
+                    style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
@@ -61,24 +39,15 @@ class _SourceArticlesPageState extends State<SourceArticlesPage> {
               ),
             ),
             Expanded(
-              child: FutureBuilder<List<NewsArticle>>(
-                future: _articlesFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(
-                        child: Text('No articles found.',
-                            style: TextStyle(color: Colors.white)));
-                  } else {
-                    final articles = snapshot.data!;
-                    return ListView.builder(
+              child: FavoriteArticles.favorites.isEmpty
+                  ? const Center(
+                      child: Text("No favorites added yet!",
+                          style: TextStyle(color: Colors.white)))
+                  : ListView.builder(
                       padding: EdgeInsets.zero,
-                      itemCount: articles.length,
+                      itemCount: FavoriteArticles.favorites.length,
                       itemBuilder: (context, index) {
-                        final article = articles[index];
+                        final article = FavoriteArticles.favorites[index];
 
                         return GestureDetector(
                           onTap: () {},
@@ -145,27 +114,49 @@ class _SourceArticlesPageState extends State<SourceArticlesPage> {
                                             ),
                                           ),
                                           const SizedBox(height: 4),
-                                          Text(
-                                            article.description ?? '',
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: const TextStyle(
-                                              fontSize: 12,
-                                              color: Colors.white70,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 4),
                                           Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
-                                              Text(
-                                                article.source.name ??
-                                                    'No Source',
-                                                style: const TextStyle(
-                                                  fontSize: 10,
-                                                  color: Colors.white,
+                                              SizedBox(
+                                                width: 100,
+                                                height: 40,
+                                                child: TextButton(
+                                                  onPressed: () {},
+                                                  style: ButtonStyle(
+                                                    backgroundColor:
+                                                        MaterialStateProperty
+                                                            .all(Colors.black),
+                                                    shape: MaterialStateProperty
+                                                        .all(
+                                                      RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(12),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  child: Text(
+                                                    article.source.name ??
+                                                        'No Source',
+                                                    textAlign: TextAlign.center,
+                                                    style: const TextStyle(
+                                                      fontSize: 8,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
                                                 ),
+                                              ),
+                                              IconButton(
+                                                icon: const Icon(Icons.delete,
+                                                    color: Colors.red),
+                                                onPressed: () {
+                                                  FavoriteArticles.favorites
+                                                      .remove(article);
+
+                                                  (context as Element)
+                                                      .reassemble();
+                                                },
                                               ),
                                             ],
                                           ),
@@ -179,10 +170,7 @@ class _SourceArticlesPageState extends State<SourceArticlesPage> {
                           ),
                         );
                       },
-                    );
-                  }
-                },
-              ),
+                    ),
             ),
           ],
         ),

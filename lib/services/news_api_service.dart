@@ -65,4 +65,5 @@ class NewsApiService {
       throw Exception('Failed to search news');
     }
   }
+
 }

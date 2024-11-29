@@ -40,6 +40,11 @@ dependencies:
   path_provider: ^2.1.2
   intl_utils: ^2.8.7
   intl: ^0.18.0
+  cached_network_image: ^3.2.3
+  shared_preferences: ^2.3.3
+  share_plus: ^10.1.2
+  sqflite: ^2.0.0+4
+  path: ^1.8.0
 
 dev_dependencies:
   flutter_launcher_icons: ^0.10.0
@@ -79,7 +84,7 @@ flutter:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/icon/app_icon.png"
+  image_path: "assets/icon/app_icon_nobg.png"
 
   # To add assets to your application, add an assets section, like this:
   # assets:
