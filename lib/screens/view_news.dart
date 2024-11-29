@@ -12,7 +12,8 @@ class ViewNewsPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           article.source.name,
-          style: const TextStyle(color: Colors.white,fontSize: 16, fontWeight: FontWeight.w500),
+          style: const TextStyle(
+              color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -30,7 +31,6 @@ class ViewNewsPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // News image
               if (article.urlToImage != null)
                 ClipRRect(
                   borderRadius: BorderRadius.circular(20),
@@ -49,12 +49,10 @@ class ViewNewsPage extends StatelessWidget {
                   child: const Icon(Icons.image, size: 50),
                 ),
               const SizedBox(height: 16),
-
-              // Title
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Text(
-                  article.title,
+                  article.title!,
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 18,
@@ -63,16 +61,20 @@ class ViewNewsPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8),
-
-              // Author and published date
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Row(
                   children: [
                     if (article.author != null)
-                      Text(
-                        'By ${article.author}',
-                        style: const TextStyle(fontSize: 14, color: Colors.grey),
+                      Container(
+                        width: 200,
+                        child: Text(
+                          'By ${article.author}',
+                          style:
+                              const TextStyle(fontSize: 14, color: Colors.grey),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     const Spacer(),
                     Text(
@@ -83,8 +85,6 @@ class ViewNewsPage extends StatelessWidget {
                 ),
               ),
               const Divider(color: Colors.white24, thickness: 1, height: 32),
-
-              // Content
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Text(

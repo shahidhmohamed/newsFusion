@@ -26,7 +26,8 @@ class _NewsSourcesPageState extends State<NewsSourcesPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
-        title: const Text("News Fusion", style: TextStyle(color: Colors.white, fontSize: 20.0)),
+        title: const Text("News Fusion",
+            style: TextStyle(color: Colors.white, fontSize: 20.0)),
         actions: [
           IconButton(
             icon: const Icon(Icons.home, color: Colors.white, size: 30),
@@ -53,7 +54,8 @@ class _NewsSourcesPageState extends State<NewsSourcesPage> {
                 final source = sources[index];
                 return Card(
                   elevation: 5,
-                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                   child: ListTile(
                     title: Text(
                       source.name,
@@ -76,11 +78,12 @@ class _NewsSourcesPageState extends State<NewsSourcesPage> {
                       ],
                     ),
                     onTap: () {
-                      // Add navigation to a page that displays articles for this source
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => SourceArticlesPage(sourceId: source.id?.toString() ?? '', sourceName: source.name),
+                          builder: (context) => SourceArticlesPage(
+                              sourceId: source.id?.toString() ?? '',
+                              sourceName: source.name),
                         ),
                       );
                     },

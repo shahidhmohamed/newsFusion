@@ -1,9 +1,8 @@
 import 'package:mark1/models/source..dart';
-
 class NewsArticle {
   final Source source;
   final String? author;
-  final String title;
+  late final String? title;
   final String? description;
   final String url;
   final String? urlToImage;
@@ -32,5 +31,19 @@ class NewsArticle {
       publishedAt: DateTime.parse(json['publishedAt']),
       content: json['content'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'source_id': source.id,
+      'source_name': source.name,
+      'author': author,
+      'title': title,
+      'description': description,
+      'url': url,
+      'urlToImage': urlToImage,
+      'publishedAt': publishedAt.toIso8601String(),
+      'content': content,
+    };
   }
 }
