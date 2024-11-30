@@ -142,6 +142,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.6"
+  crystal_navigation_bar:
+    dependency: "direct main"
+    description:
+      name: crystal_navigation_bar
+      sha256: c7a0b90bbffbde807ac01819f1ba113a302e86c2b4875cb26a14fd3fc3e91804
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.2"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -261,6 +269,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.2"
+  iconly:
+    dependency: "direct main"
+    description:
+      name: iconly
+      sha256: "22f16dd28984d232891299ead9d9b75ae5a32b4d9cdf63e8e574f1ceb11dcbd9"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
   image:
     dependency: transitive
     description:

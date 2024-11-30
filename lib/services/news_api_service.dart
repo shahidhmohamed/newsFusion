@@ -4,7 +4,7 @@ import 'package:mark1/models/source..dart';
 import '../models/news_article.dart';
 
 class NewsApiService {
-  static const String _apiKey = 'c4922c51edf440dd953a3bf982b92351';
+  static const String _apiKey = '1ef0234e36794fc796fb20e2d6589f80';
   static const String _baseUrl = 'https://newsapi.org/v2';
 
   // Fetch Top Headlines

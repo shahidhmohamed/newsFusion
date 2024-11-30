@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mark1/db_helper/db_connection.dart';
+import 'package:mark1/main.dart';
 import 'package:mark1/models/news_article.dart';
 import 'package:mark1/screens/update_saved_news.dart';
 import 'package:mark1/screens/view_news.dart';
@@ -17,61 +18,37 @@ class _SavedArticlesPageState extends State<SavedArticlesPage> {
   }
 
   Future<void> _deleteArticle(int id) async {
-    await _databaseHelper.deleteArticle(id);
-    setState(() {});
-  }
+    try {
+      await _databaseHelper.deleteArticle(id);
 
-  Future<void> _updateArticle(int id, String currentTitle) async {
-    final TextEditingController _titleController =
-        TextEditingController(text: currentTitle);
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Update News Title'),
-          content: TextField(
-            controller: _titleController,
-            decoration: const InputDecoration(
-              labelText: 'New Title',
-              hintText: 'Enter the new title',
+      // Show SnackBar after successful deletion
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text(
+            'News deleted!',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,      // Bold text
+              color: Colors.white,              // White text color
+              fontSize: 16,                     // Slightly larger font size
             ),
           ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () async {
-                String newTitle = _titleController.text;
-                if (newTitle.isNotEmpty) {
-                  Map<String, dynamic> updatedValues = {
-                    'title': newTitle,
-                  };
+          backgroundColor: Colors.red,          // Red background for error/success
+          duration: const Duration(seconds: 3), // Display duration
+          behavior: SnackBarBehavior.floating,   // Floating position
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10), // Rounded corners
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0), // Padding
+        ),
+      );
 
-                  await _databaseHelper.updateArticle(id, updatedValues);
-                  setState(() {});
-
-                  Navigator.of(context).pop();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Article updated successfully!')),
-                  );
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Title cannot be empty')),
-                  );
-                }
-              },
-              child: const Text('Update'),
-            ),
-          ],
-        );
-      },
-    );
+      setState(() {});
+    } catch (e) {
+      print('Error deleting article: $e');
+    }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -79,26 +56,27 @@ class _SavedArticlesPageState extends State<SavedArticlesPage> {
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF141F), Color(0xFF243B55)],
-            begin: Alignment.bottomCenter,
-            end: Alignment.topCenter,
+            colors:[
+              // Top part (blue)
+              Colors.black, // Top part (blue)
+              Colors.black, // Dark color for the bottom part
+              Color(0xFF1A1A2E),
+              Colors.white, // Lighter color for the bottom part
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            stops: [0.4, 0.4,0.7, 8], // You can adjust the stops to change the size of each section
           ),
         ),
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(
-                  top: 60.0, left: 10.0, right: 10.0, bottom: 10.0),
+            const Padding(
+              padding: EdgeInsets.only(
+                  top: 60.0, left: 70.0, right: 70.0, bottom: 10.0),
               child: Row(
                 children: [
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back, color: Colors.white),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  const SizedBox(width: 10),
-                  const Text(
+                  SizedBox(width: 10),
+                  Text(
                     'SAVED NEWS',
                     style: TextStyle(
                       fontSize: 24,
@@ -142,6 +120,26 @@ class _SavedArticlesPageState extends State<SavedArticlesPage> {
                             );
 
                             if (updated == true) {
+                              // Show update success message
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: const Text(
+                                    'News Updated',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,      // Bold text
+                                      color: Colors.white,              // White text color
+                                      fontSize: 16,                     // Slightly larger font size
+                                    ),
+                                  ),
+                                  backgroundColor: Colors.green,          // Red background for error/success
+                                  duration: const Duration(seconds: 3), // Display duration
+                                  behavior: SnackBarBehavior.floating,   // Floating position
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10), // Rounded corners
+                                  ),
+                                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0), // Padding
+                                ),
+                              );
                               setState(() {});
                             }
                           },

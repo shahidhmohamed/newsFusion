@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,12 +11,12 @@ import 'package:mark1/widgets/theme_controller.dart';
 import '../models/global_fav.dart';
 import 'package:share_plus/share_plus.dart';
 
-class HomePage extends StatefulWidget {
+class HomeScreen extends StatefulWidget {
   @override
-  _HomePageState createState() => _HomePageState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomeScreenState extends State<HomeScreen> {
   late Future<List<NewsArticle>> _futureArticles;
   late Future<List<NewsArticle>> _everything;
   late Future<List<Source>> _source;
@@ -60,29 +59,6 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-
-    switch (index) {
-      case 0:
-        break;
-      case 1:
-        Navigator.pushNamed(context, '/category');
-        break;
-      case 2:
-        Navigator.pushNamed(context, '/fav');
-        break;
-      case 3:
-        Navigator.pushNamed(context, '/saved-news');
-        break;
-      case 4:
-        Navigator.pushNamed(context, '/sources');
-        break;
-    }
-  }
-
   Future<void> _saveArticle(NewsArticle article) async {
     try {
       final articleMap = article.toJson();
@@ -90,34 +66,88 @@ class _HomePageState extends State<HomePage> {
       await DatabaseHelper.instance.saveArticle(articleMap);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Article saved to device!')),
+        SnackBar(
+          content: const Text(
+            'News Saved to device!',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,      // Bold text
+              color: Colors.white,              // White text color
+              fontSize: 16,                     // Slightly larger font size
+            ),
+          ),
+          backgroundColor: Colors.green,        // Green background for success
+          duration: const Duration(seconds: 3), // Display duration
+          behavior: SnackBarBehavior.floating,  // Floating position
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10), // Rounded corners
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0), // Padding
+        ),
       );
     } catch (e) {
       print('Error saving article: $e');
     }
   }
 
+  Future<void> _addFavorite(NewsArticle article) async {
+    try {
+      final articleMap = article.toJson();
+
+      await DatabaseHelper.instance.saveFavoriteArticle(articleMap);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text(
+            'News Saved to device!',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,      // Bold text
+              color: Colors.white,              // White text color
+              fontSize: 16,                     // Slightly larger font size
+            ),
+          ),
+          backgroundColor: Colors.green,        // Green background for success
+          duration: const Duration(seconds: 3), // Display duration
+          behavior: SnackBarBehavior.floating,  // Floating position
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10), // Rounded corners
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0), // Padding
+        ),
+      );
+    } catch (e) {
+      print('Error saving article: $e');
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
+      extendBody: true,
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: isDarkMode
                 ? [
-                    Colors.black,
-                    Colors.white,
-                  ]
+               // Top part (blue)
+              Colors.black, // Top part (blue)
+              Colors.black, // Dark color for the bottom part
+              Color(0xFF1A1A2E),
+              Colors.white, // Lighter color for the bottom part
+            ]
                 : [
-                    Colors.white,
-                    Color(0xFF1A1A2E),
-                  ],
-            begin: Alignment.topCenter,
-            end: Alignment.topLeft,
-            stops: [0.1, 0.0],
+              Colors.white, // Top part (blue)
+              Color(0xFF1A1A0E), // Dark color for the bottom part
+              Color(0xFF1A1A1E),
+              Color(0xFA1A1A3F), // Lighter color for the bottom part
+            ],
+            begin: Alignment.bottomCenter,
+            end: Alignment.topCenter,
+            stops: [0.4, 0.4,0.7, 8], // You can adjust the stops to change the size of each section
           ),
         ),
+
         child: FutureBuilder<List<NewsArticle>>(
           future: _futureArticles,
           builder: (context, snapshot) {
@@ -137,53 +167,65 @@ class _HomePageState extends State<HomePage> {
                       padding: const EdgeInsets.only(
                           top: 50.0, left: 16.0, right: 16.0),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text.rich(
-                            TextSpan(
-                              children: [
+                          Row(
+                            children: [
+                              Image.asset(
+                                  'assets/images/newspaper.png',
+                                  width: 44,
+                                  height: 44
+                              ),
+                              SizedBox(width: 15.0,),
+                              Text.rich(
                                 TextSpan(
-                                  text: "NEWS",
-                                  style: TextStyle(
-                                      color: isDarkMode
-                                          ? Colors.black
-                                          : Colors.white,
-                                      fontSize: 37.0,
-                                      fontWeight: FontWeight.w500),
+                                  children: [
+                                    TextSpan(
+                                      text: "News",
+                                      style: TextStyle(
+                                          color: isDarkMode
+                                              ? Colors.black
+                                              : Colors.white,
+                                          fontSize: 20.0,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                    TextSpan(
+                                      text: "Fusion",
+                                      style: TextStyle(
+                                          color: isDarkMode
+                                              ? Colors.black
+                                              : Colors.white,
+                                          fontSize: 20.0,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                  ],
                                 ),
-                                TextSpan(
-                                  text: " FUSION",
-                                  style: TextStyle(
-                                      color: isDarkMode
-                                          ? Colors.white
-                                          : Color(0xFF1A1A2E),
-                                      fontSize: 37.0,
-                                      fontWeight: FontWeight.w900),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                           const SizedBox(height: 0),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Helloo.... 👋",
+                                "Good Morning! User 👋",
                                 style: TextStyle(
                                   color:
                                       isDarkMode ? Colors.black : Colors.white,
-                                  fontSize: 18,
+                                  fontSize: 16,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
                               IconButton(
                                 icon: Obx(() => Icon(
-                                      themeController.isDarkMode.value
-                                          ? Icons.light_mode
-                                          : Icons.dark_mode,
-                                    )),
+                                  themeController.isDarkMode.value
+                                      ? Icons.light_mode // Show light mode icon in dark mode
+                                      : Icons.dark_mode, // Show dark mode icon in light mode
+                                  color: themeController.isDarkMode.value ? Colors.yellow : Colors.blue, // Yellow for dark mode, blue for light mode
+                                  size: 40,
+                                )),
                                 onPressed: () {
-                                  themeController.toggleTheme();
+                                  themeController.toggleTheme(); // Toggle between dark and light mode
                                 },
                               ),
                             ],
@@ -202,14 +244,13 @@ class _HomePageState extends State<HomePage> {
                                   color:
                                       isDarkMode ? Colors.black : Colors.white,
                                   fontSize: 19.0,
-                                  fontWeight: FontWeight.w500),
+                                  fontWeight: FontWeight.w900),
                             ),
                             TextSpan(
                               text: "aking News",
                               style: TextStyle(
-                                  color: isDarkMode
-                                      ? Colors.white
-                                      : Color(0xFF1A1A2E),
+                                  color:
+                                  isDarkMode ? Colors.black : Colors.white,
                                   fontSize: 19.0,
                                   fontWeight: FontWeight.w900),
                             ),
@@ -223,7 +264,7 @@ class _HomePageState extends State<HomePage> {
                       child: SizedBox(
                         width: double.infinity,
                         child: TextField(
-                          style: const TextStyle(color: Colors.white),
+                          style: const TextStyle(color: Colors.black),
                           controller: _searchController,
                           onChanged: (value) {
                             setState(() {
@@ -297,14 +338,14 @@ class _HomePageState extends State<HomePage> {
                       ),
                     if (_searchQuery.isEmpty)
                       SizedBox(
-                        height: 380,
+                        height: 364,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemCount: articles.length,
                           itemBuilder: (context, index) {
                             final article = articles[index];
                             return Container(
-                              width: 260,
+                              width: 270,
                               margin:
                                   const EdgeInsets.symmetric(horizontal: 10.0),
                               child: Card(
@@ -398,7 +439,7 @@ class _HomePageState extends State<HomePage> {
                                                 ),
                                               ),
                                               child: Text(
-                                                article.author ?? '',
+                                                (article.author?.split(' ').take(3).join(' ') ?? ''),
                                                 style: const TextStyle(
                                                     fontSize: 12,
                                                     color: Colors.white),
@@ -511,66 +552,63 @@ class _HomePageState extends State<HomePage> {
                                         bottom: 10,
                                         left: 5,
                                         right: 5.0),
-                                    child: Wrap(
-                                      spacing: 10.0,
-                                      children: _categories.map((category) {
-                                        return GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              _selectedCategory = category;
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,  // Enable horizontal scrolling
+                                      child: Row(
+                                        children: _categories.map((category) {
+                                          return GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                _selectedCategory = category;
 
-                                              displayList.sort((a, b) {
-                                                final isACategory = a.title!
-                                                    .toLowerCase()
-                                                    .contains(_selectedCategory!
-                                                        .toLowerCase());
-                                                final isBCategory = b.title!
-                                                    .toLowerCase()
-                                                    .contains(_selectedCategory!
-                                                        .toLowerCase());
+                                                displayList.sort((a, b) {
+                                                  final isACategory = a.title!
+                                                      .toLowerCase()
+                                                      .contains(_selectedCategory!.toLowerCase());
+                                                  final isBCategory = b.title!
+                                                      .toLowerCase()
+                                                      .contains(_selectedCategory!.toLowerCase());
 
-                                                if (isACategory && !isBCategory)
-                                                  return -1;
-                                                if (!isACategory && isBCategory)
-                                                  return 1;
-                                                return 0;
+                                                  if (isACategory && !isBCategory)
+                                                    return -1;
+                                                  if (!isACategory && isBCategory)
+                                                    return 1;
+                                                  return 0;
+                                                });
                                               });
-                                            });
-                                          },
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 4.0, horizontal: 0),
-                                            child: Chip(
-                                              label: Text(category),
-                                              backgroundColor:
-                                                  _selectedCategory == category
-                                                      ? (isDarkMode
-                                                          ? const Color(
-                                                              0xFF1A1A2E)
-                                                          : const Color(
-                                                              0xFF1A1A2E))
-                                                      : (isDarkMode
-                                                          ? Colors.grey[800]
-                                                          : Colors.grey[300]),
-                                              labelStyle: TextStyle(
-                                                color: _selectedCategory ==
-                                                        category
-                                                    ? (isDarkMode
-                                                        ? Colors.blue
-                                                        : Colors.blue)
-                                                    : (isDarkMode
-                                                        ? Colors.white
-                                                        : Colors.black),
+                                            },
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0), // Horizontal padding for spacing
+                                              child: Container(
+                                                padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 12.0), // Add padding for the content inside
+                                                decoration: BoxDecoration(
+                                                  color: Colors.transparent, // No background color
+                                                  borderRadius: BorderRadius.circular(0),
+                                                  border: const Border(
+                                                    right: BorderSide(
+                                                      color: Colors.blue,  // Only the right border is black
+                                                      width: 3,             // Adjust the border width as needed
+                                                    ),
+                                                    left: BorderSide(
+                                                      color: Colors.blue,  // Only the right border is black
+                                                      width: 3,             // Adjust the border width as needed
+                                                    ),
+                                                  ),
+                                                ),
+                                                child: Text(
+                                                  category.toUpperCase(),
+                                                  style: TextStyle(
+                                                    color: _selectedCategory == category
+                                                        ? (isDarkMode ? Colors.blue : Colors.blue)
+                                                        : (isDarkMode ? Colors.blue : Colors.blue),fontWeight: FontWeight.w500
+                                                  ),
+                                                ),
                                               ),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                side: BorderSide.none,
-                                              ),
+
                                             ),
-                                          ),
-                                        );
-                                      }).toList(),
+                                          );
+                                        }).toList(),
+                                      ),
                                     ),
                                   ),
                                   ListView.builder(
@@ -714,36 +752,18 @@ class _HomePageState extends State<HomePage> {
                                                                 ),
                                                               ),
                                                               IconButton(
-                                                                icon: Icon(
-                                                                  FavoriteArticles
-                                                                          .favorites
-                                                                          .contains(
-                                                                              article)
-                                                                      ? Icons
-                                                                          .favorite
-                                                                      : Icons
-                                                                          .favorite_border,
-                                                                  size: 20,
+                                                                icon:
+                                                                const Icon(
+                                                                  Icons
+                                                                      .favorite,
                                                                   color: Colors
                                                                       .red,
+                                                                  size: 30,
                                                                 ),
-                                                                onPressed: () {
-                                                                  setState(() {
-                                                                    if (FavoriteArticles
-                                                                        .favorites
-                                                                        .contains(
-                                                                            article)) {
-                                                                      FavoriteArticles
-                                                                          .favorites
-                                                                          .remove(
-                                                                              article);
-                                                                    } else {
-                                                                      FavoriteArticles
-                                                                          .favorites
-                                                                          .add(
-                                                                              article);
-                                                                    }
-                                                                  });
+                                                                onPressed:
+                                                                    () {
+                                                                  _addFavorite(
+                                                                      article);
                                                                 },
                                                               ),
                                                               Container(
@@ -796,49 +816,6 @@ class _HomePageState extends State<HomePage> {
               );
             }
           },
-        ),
-      ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: isDarkMode
-                ? [Colors.black, Colors.white]
-                : [Color(0xFF1A1A2E), Colors.white],
-            begin: Alignment.bottomCenter,
-            end: Alignment.topLeft,
-            stops: [0.1, 0],
-          ),
-        ),
-        child: BottomNavigationBar(
-          backgroundColor: Color(0xFF1A1A2E),
-          selectedItemColor: isDarkMode ? Colors.white : Color(0xFF1A1A2E),
-          unselectedItemColor: isDarkMode
-              ? Colors.white.withOpacity(0.7)
-              : const Color(0xFF1A1A2E).withOpacity(0.5),
-          currentIndex: _selectedIndex,
-          onTap: _onItemTapped,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.sort),
-              label: 'Sort',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.favorite),
-              label: 'Fav',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.download),
-              label: 'Saved',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.source),
-              label: 'Sources',
-            ),
-          ],
         ),
       ),
     );
