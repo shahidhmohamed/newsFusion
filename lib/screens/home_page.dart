@@ -11,6 +11,7 @@ import 'package:mark1/services/news_api_service.dart';
 import 'package:mark1/widgets/theme_controller.dart';
 import '../models/global_fav.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:crystal_navigation_bar/crystal_navigation_bar.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -820,23 +821,23 @@ class _HomePageState extends State<HomePage> {
           items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
-              label: 'Home',
+              label: '',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.sort),
-              label: 'Sort',
+              label: '',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.favorite),
-              label: 'Fav',
+              label: '',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.download),
-              label: 'Saved',
+              label: '',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.source),
-              label: 'Sources',
+              label: '',
             ),
           ],
         ),
