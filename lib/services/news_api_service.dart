@@ -1,9 +1,10 @@
 import 'dart:convert';
+import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:http/http.dart' as http;
 import 'package:mark1/models/source..dart';
 import '../models/news_article.dart';
 
-class NewsApiService {
+class NewsApiService extends GetxController{
   static const String _apiKey = 'c4922c51edf440dd953a3bf982b92351';
   static const String _baseUrl = 'https://newsapi.org/v2';
 
@@ -23,7 +24,7 @@ class NewsApiService {
     }
   }
 
-  // Every News Articles
+  // Every News By Search Home Screen eg- "Apple, Samsung, Sri Lanka"
   Future<List<NewsArticle>> fetchEverything({String? q}) async {
     final url = Uri.parse('$_baseUrl/everything?q=$q&apiKey=$_apiKey');
     final response = await http.get(url);
@@ -52,7 +53,7 @@ class NewsApiService {
     }
   }
 
-  // Search News by Date
+  // Search News
   Future<List<NewsArticle>> searchNews(String from) async {
     final url = Uri.parse(
         '$_baseUrl/everything?q=Apple&from=$from&sortBy=popularity&apiKey=$_apiKey');
