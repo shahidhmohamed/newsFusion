@@ -8,7 +8,6 @@ import 'package:mark1/models/source..dart';
 import 'package:mark1/screens/view_news.dart';
 import 'package:mark1/services/news_api_service.dart';
 import 'package:mark1/widgets/theme_controller.dart';
-import '../models/global_fav.dart';
 import 'package:share_plus/share_plus.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -24,8 +23,11 @@ class _HomeScreenState extends State<HomeScreen> {
   String _searchQuery = "";
   final TextEditingController _searchController = TextEditingController();
   final TextEditingController _controller = TextEditingController();
+
   int _selectedIndex = 0;
   late List<String> _categories = [];
+  late List<NewsArticle> displayList = [];
+  late List<String> _q = ['apple','samsung','bitcoin','usd'];
   final ThemeController themeController = Get.find();
 
   String? _selectedCategory;
@@ -35,29 +37,46 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
 
     _futureArticles = NewsApiService().fetchTopHeadlines(country: 'us');
-    _everything = NewsApiService().fetchEverything();
+    _everything = NewsApiService().fetchEverything(q:'apple');
     _source = NewsApiService().fetchSources();
-    _loadCategories();
-    print("Fetching.....");
+    // _selectedCategory = 'apple';
+    // _loadCategories();
+    _fetchEverything();
+    print("Fetching.....$_selectedCategory");
   }
 
-  Future<void> _loadCategories() async {
+  Future<void> _fetchEverything() async {
     try {
-      final sources = await _source;
+      // Fetch everything news based on the selected category or search query
+      final fetchedNews = await NewsApiService().fetchEverything(q: _selectedCategory ?? 'apple');
 
-      final categories = sources
-          .map((source) => source.category)
-          .whereType<String>()
-          .toSet()
-          .toList();
-
+      // Update the display list with the fetched news
       setState(() {
-        _categories = categories;
+        displayList = fetchedNews;
       });
-    } catch (e) {
-      print("Error fetching categories: $e");
+    } catch (error) {
+      print("Error fetching everything: $error");
+      setState(() {
+        displayList = [];
+      });
     }
   }
+
+  // Future<void> _loadCategories() async {
+  //   try {
+  //     final sources = await _source;
+  //     final categories = sources
+  //         .map((source) => source.category)
+  //         .whereType<String>()
+  //         .toSet()
+  //         .toList();
+  //     setState(() {
+  //       _categories = categories;
+  //     });
+  //   } catch (e) {
+  //     print("Error fetching categories: $e");
+  //   }
+  // }
 
   Future<void> _saveArticle(NewsArticle article) async {
     try {
@@ -70,18 +89,18 @@ class _HomeScreenState extends State<HomeScreen> {
           content: const Text(
             'News Saved to device!',
             style: TextStyle(
-              fontWeight: FontWeight.bold,      // Bold text
-              color: Colors.white,              // White text color
-              fontSize: 16,                     // Slightly larger font size
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              fontSize: 16,
             ),
           ),
-          backgroundColor: Colors.green,        // Green background for success
-          duration: const Duration(seconds: 3), // Display duration
-          behavior: SnackBarBehavior.floating,  // Floating position
+          backgroundColor: Colors.green,
+          duration: const Duration(seconds: 3),
+          behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10), // Rounded corners
+            borderRadius: BorderRadius.circular(10),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0), // Padding
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
         ),
       );
     } catch (e) {
@@ -100,25 +119,24 @@ class _HomeScreenState extends State<HomeScreen> {
           content: const Text(
             'News Saved to device!',
             style: TextStyle(
-              fontWeight: FontWeight.bold,      // Bold text
-              color: Colors.white,              // White text color
-              fontSize: 16,                     // Slightly larger font size
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              fontSize: 16,
             ),
           ),
-          backgroundColor: Colors.green,        // Green background for success
-          duration: const Duration(seconds: 3), // Display duration
-          behavior: SnackBarBehavior.floating,  // Floating position
+          backgroundColor: Colors.green,
+          duration: const Duration(seconds: 3),
+          behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10), // Rounded corners
+            borderRadius: BorderRadius.circular(10),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0), // Padding
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
         ),
       );
     } catch (e) {
       print('Error saving article: $e');
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -130,24 +148,22 @@ class _HomeScreenState extends State<HomeScreen> {
           gradient: LinearGradient(
             colors: isDarkMode
                 ? [
-               // Top part (blue)
-              Colors.black, // Top part (blue)
-              Colors.black, // Dark color for the bottom part
+              Colors.black,
+              Colors.black,
               Color(0xFF1A1A2E),
-              Colors.white, // Lighter color for the bottom part
+              Colors.white,
             ]
                 : [
-              Colors.white, // Top part (blue)
-              Color(0xFF1A1A0E), // Dark color for the bottom part
+              Colors.white,
+              Color(0xFF1A1A0E),
               Color(0xFF1A1A1E),
-              Color(0xFA1A1A3F), // Lighter color for the bottom part
+              Color(0xFA1A1A3F),
             ],
             begin: Alignment.bottomCenter,
             end: Alignment.topCenter,
-            stops: [0.4, 0.4,0.7, 8], // You can adjust the stops to change the size of each section
+            stops: [0.4, 0.4, 0.7, 8],
           ),
         ),
-
         child: FutureBuilder<List<NewsArticle>>(
           future: _futureArticles,
           builder: (context, snapshot) {
@@ -167,16 +183,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: const EdgeInsets.only(
                           top: 50.0, left: 16.0, right: 16.0),
                       child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Row(
                             children: [
-                              Image.asset(
-                                  'assets/images/newspaper.png',
-                                  width: 44,
-                                  height: 44
+                              Image.asset('assets/images/newspaper.png',
+                                  width: 44, height: 44),
+                              const SizedBox(
+                                width: 15.0,
                               ),
-                              SizedBox(width: 15.0,),
                               Text.rich(
                                 TextSpan(
                                   children: [
@@ -211,7 +226,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 "Good Morning! User 👋",
                                 style: TextStyle(
                                   color:
-                                      isDarkMode ? Colors.black : Colors.white,
+                                  isDarkMode ? Colors.black : Colors.white,
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -219,13 +234,15 @@ class _HomeScreenState extends State<HomeScreen> {
                               IconButton(
                                 icon: Obx(() => Icon(
                                   themeController.isDarkMode.value
-                                      ? Icons.light_mode // Show light mode icon in dark mode
-                                      : Icons.dark_mode, // Show dark mode icon in light mode
-                                  color: themeController.isDarkMode.value ? Colors.yellow : Colors.blue, // Yellow for dark mode, blue for light mode
+                                      ? Icons.light_mode
+                                      : Icons.dark_mode,
+                                  color: themeController.isDarkMode.value
+                                      ? Colors.yellow
+                                      : Colors.blue,
                                   size: 40,
                                 )),
                                 onPressed: () {
-                                  themeController.toggleTheme(); // Toggle between dark and light mode
+                                  themeController.toggleTheme();
                                 },
                               ),
                             ],
@@ -242,7 +259,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               text: "Discover Bre",
                               style: TextStyle(
                                   color:
-                                      isDarkMode ? Colors.black : Colors.white,
+                                  isDarkMode ? Colors.black : Colors.white,
                                   fontSize: 19.0,
                                   fontWeight: FontWeight.w900),
                             ),
@@ -264,7 +281,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: SizedBox(
                         width: double.infinity,
                         child: TextField(
-                          style: const TextStyle(color: Colors.black),
+                          style: const TextStyle(color: Colors.white),
                           controller: _searchController,
                           onChanged: (value) {
                             setState(() {
@@ -272,9 +289,16 @@ class _HomeScreenState extends State<HomeScreen> {
                               _isSearchActive = true;
                             });
                           },
+                          onSubmitted: (query) {
+                            setState(() {
+                              _searchQuery = query;
+                              _selectedCategory = _searchQuery; // Set the search query as the category
+                              _fetchEverything(); // Fetch news with the updated search query
+                            });
+                          },
                           decoration: InputDecoration(
                             prefixIcon:
-                                const Icon(Icons.search, color: Colors.grey),
+                            const Icon(Icons.search, color: Colors.grey),
                             hintText: "Find Breaking News",
                             hintStyle: TextStyle(color: Colors.grey.shade400),
                             border: OutlineInputBorder(
@@ -294,15 +318,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                 horizontal: 16.0, vertical: 14.0),
                             suffixIcon: _searchController.text.isNotEmpty
                                 ? InkWell(
-                                    onTap: () {
-                                      _searchController.clear();
-                                      setState(() {
-                                        _searchQuery = '';
-                                        _isSearchActive = false;
-                                      });
-                                    },
-                                    child: const Icon(Icons.close),
-                                  )
+                              onTap: () {
+                                _searchController.clear();
+                                setState(() {
+                                  _searchQuery = '';
+                                  _isSearchActive = false;
+                                });
+                              },
+                              child: const Icon(Icons.close),
+                            )
                                 : null,
                           ),
                         ),
@@ -347,7 +371,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             return Container(
                               width: 270,
                               margin:
-                                  const EdgeInsets.symmetric(horizontal: 10.0),
+                              const EdgeInsets.symmetric(horizontal: 10.0),
                               child: Card(
                                 elevation: 4,
                                 shape: RoundedRectangleBorder(
@@ -365,18 +389,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                   },
                                   child: Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     children: [
                                       if (article.urlToImage != null)
                                         Stack(
                                           children: [
                                             Padding(
                                               padding:
-                                                  const EdgeInsets.all(12.0),
+                                              const EdgeInsets.all(12.0),
                                               child: ClipRRect(
                                                 borderRadius:
-                                                    const BorderRadius.all(
-                                                        Radius.circular(18)),
+                                                const BorderRadius.all(
+                                                    Radius.circular(18)),
                                                 child: Image.network(
                                                   article.urlToImage!,
                                                   height: 140,
@@ -412,7 +436,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         padding: const EdgeInsets.all(10.0),
                                         child: Column(
                                           crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               article.title ?? '',
@@ -427,19 +451,23 @@ class _HomeScreenState extends State<HomeScreen> {
                                               onPressed: () {},
                                               style: ButtonStyle(
                                                 backgroundColor:
-                                                    MaterialStateProperty.all(
-                                                        Colors.black),
+                                                MaterialStateProperty.all(
+                                                    Colors.black),
                                                 shape:
-                                                    MaterialStateProperty.all(
+                                                MaterialStateProperty.all(
                                                   RoundedRectangleBorder(
                                                     borderRadius:
-                                                        BorderRadius.circular(
-                                                            12),
+                                                    BorderRadius.circular(
+                                                        12),
                                                   ),
                                                 ),
                                               ),
                                               child: Text(
-                                                (article.author?.split(' ').take(3).join(' ') ?? ''),
+                                                (article.author
+                                                    ?.split(' ')
+                                                    .take(3)
+                                                    .join(' ') ??
+                                                    ''),
                                                 style: const TextStyle(
                                                     fontSize: 12,
                                                     color: Colors.white),
@@ -448,8 +476,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                             const SizedBox(height: 04),
                                             Row(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
+                                              MainAxisAlignment
+                                                  .spaceBetween,
                                               children: [
                                                 Row(
                                                   children: [
@@ -463,17 +491,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     const SizedBox(width: 5),
                                                     Text(
                                                       article.publishedAt !=
-                                                              null
+                                                          null
                                                           ? DateFormat('yMMMd')
-                                                              .format(article
-                                                                  .publishedAt)
+                                                          .format(article
+                                                          .publishedAt)
                                                           : '',
                                                       style: const TextStyle(
                                                           color: Colors.grey,
                                                           fontSize: 14),
                                                       maxLines: 2,
                                                       overflow:
-                                                          TextOverflow.ellipsis,
+                                                      TextOverflow.ellipsis,
                                                     ),
                                                     const SizedBox(
                                                       height: 60,
@@ -498,7 +526,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     Share.share(
                                                       'Check out this article: $articleTitle\n\nRead more at: $articleUrl',
                                                       subject:
-                                                          'Sharing an article',
+                                                      'Sharing an article',
                                                     );
                                                   },
                                                 ),
@@ -533,15 +561,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                   child: Text('No articles found.'));
                             } else {
                               final articles = snapshot.data!;
-                              final filteredNews = articles
-                                  .where((article) => article.title!
-                                      .toLowerCase()
-                                      .contains(_searchQuery.toLowerCase()))
-                                  .toList();
-
-                              final displayList = _searchQuery.isEmpty
-                                  ? articles
-                                  : filteredNews;
+                              // final filteredNews = articles
+                              //     .where((article) => article.title!
+                              //         .toLowerCase()
+                              //         .contains(_searchQuery.toLowerCase()))
+                              //     .toList();
 
                               return Column(
                                 mainAxisSize: MainAxisSize.min,
@@ -553,58 +577,72 @@ class _HomeScreenState extends State<HomeScreen> {
                                         left: 5,
                                         right: 5.0),
                                     child: SingleChildScrollView(
-                                      scrollDirection: Axis.horizontal,  // Enable horizontal scrolling
+                                      scrollDirection: Axis.horizontal,
                                       child: Row(
-                                        children: _categories.map((category) {
+                                        children: _q.map((category) {
                                           return GestureDetector(
-                                            onTap: () {
+                                            onTap: () async {
                                               setState(() {
                                                 _selectedCategory = category;
-
-                                                displayList.sort((a, b) {
-                                                  final isACategory = a.title!
-                                                      .toLowerCase()
-                                                      .contains(_selectedCategory!.toLowerCase());
-                                                  final isBCategory = b.title!
-                                                      .toLowerCase()
-                                                      .contains(_selectedCategory!.toLowerCase());
-
-                                                  if (isACategory && !isBCategory)
-                                                    return -1;
-                                                  if (!isACategory && isBCategory)
-                                                    return 1;
-                                                  return 0;
-                                                });
                                               });
+
+                                              try {
+                                                // final query = (_selectedCategory == null || _selectedCategory!.isEmpty)
+                                                //     ? 'apple'  // Default to 'apple' if null or empty
+                                                //     : _selectedCategory!;  // Use the selected category otherwise
+
+                                                // print("Fetching news for query: $query");
+                                                final fetchedNews = await NewsApiService().fetchEverything(q: _selectedCategory);
+                                                setState(() {
+                                                  displayList = fetchedNews;
+                                                });
+                                              } catch (error) {
+                                                // Handle error (e.g., show a message to the user)
+                                                print("Error fetching news: $error");
+                                              }
                                             },
                                             child: Padding(
-                                              padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0), // Horizontal padding for spacing
+                                              padding:
+                                              const EdgeInsets.symmetric(
+                                                  vertical: 4.0,
+                                                  horizontal: 8.0),
                                               child: Container(
-                                                padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 12.0), // Add padding for the content inside
+                                                padding:
+                                                const EdgeInsets.symmetric(
+                                                    vertical: 4.0,
+                                                    horizontal: 12.0),
                                                 decoration: BoxDecoration(
-                                                  color: Colors.transparent, // No background color
-                                                  borderRadius: BorderRadius.circular(0),
+                                                  color: Colors.transparent,
+                                                  borderRadius:
+                                                  BorderRadius.circular(0),
                                                   border: const Border(
                                                     right: BorderSide(
-                                                      color: Colors.blue,  // Only the right border is black
-                                                      width: 3,             // Adjust the border width as needed
+                                                      color: Colors.blue,
+                                                      width: 3,
                                                     ),
                                                     left: BorderSide(
-                                                      color: Colors.blue,  // Only the right border is black
-                                                      width: 3,             // Adjust the border width as needed
+                                                      color: Colors.blue,
+                                                      width: 3,
                                                     ),
                                                   ),
                                                 ),
                                                 child: Text(
                                                   category.toUpperCase(),
                                                   style: TextStyle(
-                                                    color: _selectedCategory == category
-                                                        ? (isDarkMode ? Colors.blue : Colors.blue)
-                                                        : (isDarkMode ? Colors.blue : Colors.blue),fontWeight: FontWeight.w500
-                                                  ),
+                                                      color:
+                                                      _selectedCategory ==
+                                                          category
+                                                          ? (isDarkMode
+                                                          ? Colors.blue
+                                                          : Colors.blue)
+                                                          : (isDarkMode
+                                                          ? Colors.blue
+                                                          : Colors
+                                                          .blue),
+                                                      fontWeight:
+                                                      FontWeight.w500),
                                                 ),
                                               ),
-
                                             ),
                                           );
                                         }).toList(),
@@ -614,7 +652,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ListView.builder(
                                     padding: EdgeInsets.zero,
                                     physics:
-                                        const NeverScrollableScrollPhysics(),
+                                    const NeverScrollableScrollPhysics(),
                                     shrinkWrap: true,
                                     itemCount: displayList.length,
                                     itemBuilder: (context, index) {
@@ -639,21 +677,21 @@ class _HomeScreenState extends State<HomeScreen> {
                                               elevation: 4,
                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
-                                                    BorderRadius.circular(12),
+                                                BorderRadius.circular(12),
                                               ),
                                               child: Padding(
                                                 padding:
-                                                    const EdgeInsets.all(8.0),
+                                                const EdgeInsets.all(8.0),
                                                 child: Row(
                                                   crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                                                  CrossAxisAlignment.start,
                                                   children: [
                                                     if (article.urlToImage !=
                                                         null)
                                                       ClipRRect(
                                                         borderRadius:
-                                                            BorderRadius
-                                                                .circular(8),
+                                                        BorderRadius
+                                                            .circular(8),
                                                         child: Image.network(
                                                           article.urlToImage!,
                                                           height: 100,
@@ -661,7 +699,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                           fit: BoxFit.cover,
                                                           errorBuilder:
                                                               (context, error,
-                                                                  stackTrace) {
+                                                              stackTrace) {
                                                             return Container(
                                                               height: 100,
                                                               width: 100,
@@ -689,20 +727,20 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     Expanded(
                                                       child: Column(
                                                         crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
+                                                        CrossAxisAlignment
+                                                            .start,
                                                         children: [
                                                           Text(
                                                             article.title ?? '',
                                                             maxLines: 2,
                                                             overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
+                                                            TextOverflow
+                                                                .ellipsis,
                                                             style:
-                                                                const TextStyle(
+                                                            const TextStyle(
                                                               fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
+                                                              FontWeight
+                                                                  .bold,
                                                               fontSize: 10,
                                                             ),
                                                           ),
@@ -710,27 +748,27 @@ class _HomeScreenState extends State<HomeScreen> {
                                                               height: 4),
                                                           Row(
                                                             mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceBetween,
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
                                                             children: [
                                                               SizedBox(
                                                                 width: 80,
                                                                 height: 40,
                                                                 child:
-                                                                    TextButton(
+                                                                TextButton(
                                                                   onPressed:
                                                                       () {},
                                                                   style:
-                                                                      ButtonStyle(
+                                                                  ButtonStyle(
                                                                     backgroundColor:
-                                                                        MaterialStateProperty.all(
-                                                                            Colors.black),
+                                                                    MaterialStateProperty.all(
+                                                                        Colors.black),
                                                                     shape:
-                                                                        MaterialStateProperty
-                                                                            .all(
+                                                                    MaterialStateProperty
+                                                                        .all(
                                                                       RoundedRectangleBorder(
                                                                         borderRadius:
-                                                                            BorderRadius.circular(12),
+                                                                        BorderRadius.circular(12),
                                                                       ),
                                                                     ),
                                                                   ),
@@ -739,12 +777,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                         .source
                                                                         .name,
                                                                     textAlign:
-                                                                        TextAlign
-                                                                            .center,
+                                                                    TextAlign
+                                                                        .center,
                                                                     style:
-                                                                        const TextStyle(
+                                                                    const TextStyle(
                                                                       fontSize:
-                                                                          8,
+                                                                      8,
                                                                       color: Colors
                                                                           .white,
                                                                     ),
@@ -760,8 +798,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                       .red,
                                                                   size: 30,
                                                                 ),
-                                                                onPressed:
-                                                                    () {
+                                                                onPressed: () {
                                                                   _addFavorite(
                                                                       article);
                                                                 },
@@ -769,16 +806,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                                               Container(
                                                                 height: 35,
                                                                 decoration:
-                                                                    const BoxDecoration(
+                                                                const BoxDecoration(
                                                                   color: Colors
                                                                       .black,
                                                                   shape: BoxShape
                                                                       .circle,
                                                                 ),
                                                                 child:
-                                                                    IconButton(
+                                                                IconButton(
                                                                   icon:
-                                                                      const Icon(
+                                                                  const Icon(
                                                                     Icons
                                                                         .download,
                                                                     color: Colors

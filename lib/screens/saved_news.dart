@@ -21,24 +21,23 @@ class _SavedArticlesPageState extends State<SavedArticlesPage> {
     try {
       await _databaseHelper.deleteArticle(id);
 
-      // Show SnackBar after successful deletion
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text(
             'News deleted!',
             style: TextStyle(
-              fontWeight: FontWeight.bold,      // Bold text
-              color: Colors.white,              // White text color
-              fontSize: 16,                     // Slightly larger font size
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              fontSize: 16,
             ),
           ),
-          backgroundColor: Colors.red,          // Red background for error/success
-          duration: const Duration(seconds: 3), // Display duration
-          behavior: SnackBarBehavior.floating,   // Floating position
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 3),
+          behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10), // Rounded corners
+            borderRadius: BorderRadius.circular(10),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0), // Padding
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
         ),
       );
 
@@ -48,24 +47,21 @@ class _SavedArticlesPageState extends State<SavedArticlesPage> {
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors:[
-              // Top part (blue)
-              Colors.black, // Top part (blue)
-              Colors.black, // Dark color for the bottom part
+            colors: [
+              Colors.black,
+              Colors.black,
               Color(0xFF1A1A2E),
-              Colors.white, // Lighter color for the bottom part
+              Colors.white,
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            stops: [0.4, 0.4,0.7, 8], // You can adjust the stops to change the size of each section
+            stops: [0.4, 0.4, 0.7, 8],
           ),
         ),
         child: Column(
@@ -120,24 +116,24 @@ class _SavedArticlesPageState extends State<SavedArticlesPage> {
                             );
 
                             if (updated == true) {
-                              // Show update success message
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: const Text(
                                     'News Updated',
                                     style: TextStyle(
-                                      fontWeight: FontWeight.bold,      // Bold text
-                                      color: Colors.white,              // White text color
-                                      fontSize: 16,                     // Slightly larger font size
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      fontSize: 16,
                                     ),
                                   ),
-                                  backgroundColor: Colors.green,          // Red background for error/success
-                                  duration: const Duration(seconds: 3), // Display duration
-                                  behavior: SnackBarBehavior.floating,   // Floating position
+                                  backgroundColor: Colors.green,
+                                  duration: const Duration(seconds: 3),
+                                  behavior: SnackBarBehavior.floating,
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10), // Rounded corners
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
-                                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0), // Padding
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16.0, vertical: 10.0),
                                 ),
                               );
                               setState(() {});
