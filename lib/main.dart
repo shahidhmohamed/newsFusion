@@ -20,19 +20,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeController themeController = Get.put(ThemeController());
-    // return GetMaterialApp(
-    //   debugShowCheckedModeBanner: false,
-    //   theme: themeController.isDarkMode.value
-    //       ? ThemeData.dark().copyWith(
-    //     primaryColor: Colors.black,
-    //     scaffoldBackgroundColor: Colors.black,
-    //   )
-    //       : ThemeData.light().copyWith(
-    //     primaryColor: Colors.white,
-    //     scaffoldBackgroundColor: Colors.white,
-    //   ),
-    //   home: const HomePage(),
-    // );
 
     return Obx(() {
       return GetMaterialApp(
@@ -56,31 +43,25 @@ class MyApp extends StatelessWidget {
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
-
   @override
   _HomePageState createState() => _HomePageState();
 }
-
 class _HomePageState extends State<HomePage> {
   // Index to keep track of the selected tab
   int _selectedIndex = 0;
 
   // List of screens that correspond to each tab
   final List<Widget> _screens = [
-    HomeScreen(),  // Your Home Screen Widget
+    HomeScreen(),
     FavoritesScreen(),
-    CategoryArticle(),
+    const CategoryArticle(),
     SavedArticlesPage(),
-    // const FavoriteScreen(),  // Your Favorite Screen Widget
-    // const AddScreen(),  // Your Add Screen Widget
-    // const SearchScreen(),  // Your Search Screen Widget
-    // const ProfileScreen(),  // Your Profile Screen Widget
   ];
 
   // Handle the tab change
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;  // Update the selected tab
+      _selectedIndex = index;
     });
   }
 
@@ -125,13 +106,6 @@ class _HomePageState extends State<HomePage> {
                 icon: IconlyBold.bookmark,
                 unselectedIcon: IconlyLight.bookmark,
                 selectedColor: Colors.white),
-
-            /// Profile
-            // CrystalNavigationBarItem(
-            //   icon: IconlyBold.user_2,
-            //   unselectedIcon: IconlyLight.user,
-            //   selectedColor: Colors.white,
-            // ),
           ],
         ),
       ),

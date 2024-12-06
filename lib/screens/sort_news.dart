@@ -20,7 +20,7 @@ class _CategoryArticleState extends State<CategoryArticle> {
   @override
   void initState() {
     super.initState();
-    _everything = NewsApiService().fetchEverything();
+    _everything = NewsApiService().fetchEverything(q:'apple');
   }
 
   @override
@@ -31,7 +31,8 @@ class _CategoryArticleState extends State<CategoryArticle> {
         automaticallyImplyLeading: false,
         title: const Text(
           'Search News',
-          style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600),
+          style: TextStyle(
+              color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -39,27 +40,29 @@ class _CategoryArticleState extends State<CategoryArticle> {
           IconButton(
             icon: const Icon(Icons.home, color: Colors.white),
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage(),));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HomePage(),
+                  ));
             },
           ),
         ],
       ),
       body: Stack(
         children: [
-          // Background gradient
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                colors:[
-                  // Top part (blue)
-                  Colors.black, // Top part (blue)
-                  Colors.black, // Dark color for the bottom part
+                colors: [
+                  Colors.black,
+                  Colors.black,
                   Color(0xFF1A1A2E),
-                  Colors.white, // Lighter color for the bottom part
+                  Colors.white,
                 ],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                stops: [0.4, 0.4,0.7, 8], // You can adjust the stops to change the size of each section
+                stops: [0.4, 0.4, 0.7, 8],
               ),
             ),
           ),
@@ -77,14 +80,15 @@ class _CategoryArticleState extends State<CategoryArticle> {
                 );
               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                 return const Center(
-                  child: Text('No articles found.', style: TextStyle(color: Colors.white)),
+                  child: Text('No articles found.',
+                      style: TextStyle(color: Colors.white)),
                 );
               } else {
                 final articles = snapshot.data!;
 
                 final filteredArticles = articles.where((article) {
-                  bool matchesSource =
-                      _selectedSource == null || article.source.name == _selectedSource;
+                  bool matchesSource = _selectedSource == null ||
+                      article.source.name == _selectedSource;
                   bool matchesDate = _selectedDate == null ||
                       DateFormat('yyyy-MM-dd').format(article.publishedAt) ==
                           DateFormat('yyyy-MM-dd').format(_selectedDate!);
@@ -93,23 +97,28 @@ class _CategoryArticleState extends State<CategoryArticle> {
 
                 return SingleChildScrollView(
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 110.0, left: 16.0,right: 16.0),
+                    padding: const EdgeInsets.only(
+                        top: 110.0, left: 16.0, right: 16.0),
                     child: Column(
                       children: [
                         DropdownButton<String>(
                           isExpanded: true,
                           value: _selectedSource,
-                          hint: const Text('Filter by Source', style: TextStyle(color: Colors.white)),
+                          hint: const Text('Filter by Source',
+                              style: TextStyle(color: Colors.white)),
                           dropdownColor: Colors.grey[800],
                           items: articles
                               .map((article) => article.source.name)
                               .toSet()
                               .map((source) => DropdownMenuItem<String>(
-                            value: source,
-                            child: Text(source, style: const TextStyle(color: Colors.white)),
-                          ))
+                                    value: source,
+                                    child: Text(source,
+                                        style: const TextStyle(
+                                            color: Colors.white)),
+                                  ))
                               .toList(),
-                          onChanged: (value) => setState(() => _selectedSource = value),
+                          onChanged: (value) =>
+                              setState(() => _selectedSource = value),
                         ),
                         const SizedBox(height: 16),
                         TextButton(
@@ -126,11 +135,13 @@ class _CategoryArticleState extends State<CategoryArticle> {
                               });
                             }
                           },
-                          style: TextButton.styleFrom(backgroundColor: Colors.blueAccent),
+                          style: TextButton.styleFrom(
+                              backgroundColor: Colors.blueAccent),
                           child: Text(
                             _selectedDate == null
                                 ? "Pick a Date"
-                                : DateFormat('yyyy-MM-dd').format(_selectedDate!),
+                                : DateFormat('yyyy-MM-dd')
+                                    .format(_selectedDate!),
                             style: const TextStyle(color: Colors.white),
                           ),
                         ),
@@ -144,28 +155,33 @@ class _CategoryArticleState extends State<CategoryArticle> {
                             final article = filteredArticles[index];
                             return Card(
                               color: Colors.white.withOpacity(0.1),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15)),
                               elevation: 5,
                               child: ListTile(
                                 leading: article.urlToImage != null
                                     ? ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: Image.network(
-                                    article.urlToImage!,
-                                    height: 160,
-                                    width: 100,
-                                    fit: BoxFit.cover,
-                                  ),
-                                )
-                                    : const Icon(Icons.image, size: 60, color: Colors.white38),
-                                title: Text(article.title!, style: const TextStyle(color: Colors.white,fontSize: 10)),
+                                        borderRadius: BorderRadius.circular(10),
+                                        child: Image.network(
+                                          article.urlToImage!,
+                                          height: 160,
+                                          width: 100,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      )
+                                    : const Icon(Icons.image,
+                                        size: 60, color: Colors.white38),
+                                title: Text(article.title!,
+                                    style: const TextStyle(
+                                        color: Colors.white, fontSize: 10)),
                                 subtitle: Text(article.source.name,
                                     style: const TextStyle(color: Colors.grey)),
                                 onTap: () {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => ViewNewsPage(article: article),
+                                      builder: (context) =>
+                                          ViewNewsPage(article: article),
                                     ),
                                   );
                                 },

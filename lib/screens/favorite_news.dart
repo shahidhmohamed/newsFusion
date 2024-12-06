@@ -21,24 +21,23 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     try {
       await _databaseHelper.deleteFavoriteArticle(id);
 
-      // Show SnackBar after successful deletion
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text(
             'News deleted!',
             style: TextStyle(
-              fontWeight: FontWeight.bold,      // Bold text
-              color: Colors.white,              // White text color
-              fontSize: 16,                     // Slightly larger font size
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              fontSize: 16,
             ),
           ),
-          backgroundColor: Colors.red,          // Red background for error/success
-          duration: const Duration(seconds: 3), // Display duration
-          behavior: SnackBarBehavior.floating,   // Floating position
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 3),
+          behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10), // Rounded corners
+            borderRadius: BorderRadius.circular(10),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0), // Padding
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
         ),
       );
 
@@ -48,24 +47,21 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors:[
-              // Top part (blue)
-              Colors.black, // Top part (blue)
-              Colors.black, // Dark color for the bottom part
+            colors: [
+              Colors.black,
+              Colors.black,
               Color(0xFF1A1A2E),
-              Colors.white, // Lighter color for the bottom part
+              Colors.white,
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            stops: [0.4, 0.4,0.7, 8], // You can adjust the stops to change the size of each section
+            stops: [0.4, 0.4, 0.7, 8],
           ),
         ),
         child: Column(
@@ -114,30 +110,30 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                                   id: article['id'],
                                   initialTitle: article['title'] ?? '',
                                   initialDescription:
-                                  article['description'] ?? '',
+                                      article['description'] ?? '',
                                 ),
                               ),
                             );
 
                             if (updated == true) {
-                              // Show update success message
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: const Text(
                                     'News Updated',
                                     style: TextStyle(
-                                      fontWeight: FontWeight.bold,      // Bold text
-                                      color: Colors.white,              // White text color
-                                      fontSize: 16,                     // Slightly larger font size
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      fontSize: 16,
                                     ),
                                   ),
-                                  backgroundColor: Colors.green,          // Red background for error/success
-                                  duration: const Duration(seconds: 3), // Display duration
-                                  behavior: SnackBarBehavior.floating,   // Floating position
+                                  backgroundColor: Colors.green,
+                                  duration: const Duration(seconds: 3),
+                                  behavior: SnackBarBehavior.floating,
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10), // Rounded corners
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
-                                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0), // Padding
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16.0, vertical: 10.0),
                                 ),
                               );
                               setState(() {});
@@ -194,7 +190,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                                     Expanded(
                                       child: Column(
                                         crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             article['title'] ?? 'No Title',
@@ -208,7 +204,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                                           const SizedBox(height: 4),
                                           Row(
                                             mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                                MainAxisAlignment.spaceBetween,
                                             children: [
                                               SizedBox(
                                                 width: 100,
@@ -217,14 +213,14 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                                                   onPressed: () {},
                                                   style: ButtonStyle(
                                                     backgroundColor:
-                                                    MaterialStateProperty
-                                                        .all(Colors.black),
+                                                        MaterialStateProperty
+                                                            .all(Colors.black),
                                                     shape: MaterialStateProperty
                                                         .all(
                                                       RoundedRectangleBorder(
                                                         borderRadius:
-                                                        BorderRadius
-                                                            .circular(12),
+                                                            BorderRadius
+                                                                .circular(12),
                                                       ),
                                                     ),
                                                   ),
